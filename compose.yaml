@@ -1,0 +1,67 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: rabbitmq
+    ports:
+      - '5672:5672'   # AMQP port
+      - '15672:15672' # Management UI port
+    healthcheck:
+      #test: ["CMD", "curl", "-f", "http://127.0.0.1:15672"]
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 10s
+      retries: 2
+    networks:
+      - app-network
+
+  features:
+    build:
+      context: .
+      dockerfile: features/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  model:
+    build:
+      context: .
+      dockerfile: model/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - app-network
+
+  metric:
+    build:
+      context: .
+      dockerfile: metric/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./metric/logs:/app/logs
+    networks:
+      - app-network
+
+  plot:
+    build:
+      context: .
+      dockerfile: plot/Dockerfile
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    volumes:
+      - ./metric/logs:/app/logs
+    networks:
+      - app-network
+  
+#volumes:
+#  logs_data:  # Определяем общий том для хранения логов
+
+networks:
+  app-network:
