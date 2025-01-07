@@ -6,10 +6,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import json
 
-# директория хранения логов
+# директория хранения логов для работы в докер
 LOG_DIR = f"{os.path.dirname(os.path.dirname(__file__))}/logs"
 # для локального запуска
-# LOG_DIR = f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/metric/logs"
+# LOG_DIR = f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/logs"
 # формируем пути к файлам
 LOG_FNAME = f"{LOG_DIR}/metric_log.csv"
 PLOT_FNAME = f"{LOG_DIR}/error_distribution.png"
@@ -51,6 +51,7 @@ if __name__ == "__main__":
 
     # Создаём подключение к серверу на локальном хосте:
     # connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+    # Создаём подключение к rabbitmq в докере
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
 

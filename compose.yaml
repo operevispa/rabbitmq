@@ -3,10 +3,11 @@ version: "3.8"
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: rabbitmq
+    container_name: rabbitmq
+    hostname: rabbitmq        # это как раз то, что используется вместо localhost
     ports:
-      - '5672:5672'   # AMQP port
-      - '15672:15672' # Management UI port
+      - 5672:5672   # AMQP port
+      - 15672:15672 # Management UI port
     healthcheck:
       #test: ["CMD", "curl", "-f", "http://127.0.0.1:15672"]
       test: rabbitmq-diagnostics -q ping
@@ -18,8 +19,7 @@ services:
 
   features:
     build:
-      context: .
-      dockerfile: features/Dockerfile
+      context: features
     depends_on:
       rabbitmq:
         condition: service_healthy
@@ -28,35 +28,44 @@ services:
 
   model:
     build:
-      context: .
-      dockerfile: model/Dockerfile
+      context: model
     depends_on:
       rabbitmq:
         condition: service_healthy
+      features:
+        condition: service_started
     networks:
       - app-network
 
   metric:
     build:
-      context: .
-      dockerfile: metric/Dockerfile
+      context: metric
     depends_on:
       rabbitmq:
         condition: service_healthy
+      features:
+        condition: service_started
+      model:
+        condition: service_started
     volumes:
-      - ./metric/logs:/app/logs
+      - ./logs:/app/logs
     networks:
       - app-network
 
   plot:
     build:
-      context: .
-      dockerfile: plot/Dockerfile
+      context: plot
     depends_on:
       rabbitmq:
         condition: service_healthy
+      features:
+        condition: service_started
+      model:
+        condition: service_started
+      metric:
+        condition: service_started
     volumes:
-      - ./metric/logs:/app/logs
+      - ./logs:/app/logs
     networks:
       - app-network
   

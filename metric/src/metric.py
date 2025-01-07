@@ -32,13 +32,16 @@ def callback(ch, method, properties, body):
 
 
 if __name__ == "__main__":
-    # директория для хранения логов
+    # директория для хранения логов в докере
     logdir = f"{os.path.dirname(os.path.dirname(__file__))}/logs"
+    # директория для хранения логов для локальной разработки
+    # logdir = f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/logs"
     # создаем директорию logs, если она не существует
     os.makedirs(logdir, exist_ok=True)
 
     # Создаём подключение к серверу на локальном хосте:
     # connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+    # Создаём подключение к rabbitmq в докере
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
 

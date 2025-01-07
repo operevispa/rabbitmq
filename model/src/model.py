@@ -39,6 +39,7 @@ if __name__ == "__main__":
 
     # Создаём подключение к серверу на локальном хосте:
     # connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+    # Создаём подключение к rabbitmq в докере
     connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
     channel = connection.channel()
 

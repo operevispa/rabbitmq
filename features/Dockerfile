@@ -3,9 +3,9 @@ FROM python:3.10-slim
 
 WORKDIR /app
 
-COPY features/requirements.txt .
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY features/src/ src/
+COPY src/ src/
 
 CMD ["python", "src/features.py"]

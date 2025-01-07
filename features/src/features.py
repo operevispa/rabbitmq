@@ -8,8 +8,9 @@ from datetime import datetime
 # Загружаем датасет о диабете
 X, y = load_diabetes(return_X_y=True)
 
-# Подключение к серверу на локальном хосте:
-# connection = pika.BlockingConnection(pika.ConnectionParameters("localhost"))
+# Создаём подключение к серверу на локальном хосте:
+# connection = pika.BlockingConnection(pika.ConnectionParameters(host="localhost"))
+# Создаём подключение к rabbitmq в докере
 connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
 channel = connection.channel()
 
